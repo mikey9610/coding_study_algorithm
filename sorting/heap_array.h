@@ -34,4 +34,9 @@ void Heap_Array_show(Heap_Array* heap);
 int Heap_Array_is_full(Heap_Array* heap);
 void Heap_Array_extend(Heap_Array* heap);
 
+// Bottom-Up HeapSort
+void Bottom_Up_Heap_Array_sort(int* list, int size);
+void Bottom_Up_Heap_Array_down_heap(int* list, int size);
+
+
 #endif

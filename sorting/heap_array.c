@@ -81,3 +81,12 @@ void Heap_Array_extend(Heap_Array* heap) {
     heap->heap_ = new_heap;
     heap->capacity_ *= 2;
 }
+
+// Bottom-Up HeapSort
+void Bottom_Up_Heap_Array_sort(int* list, int size) {
+    int i;
+    for(i=size/2; i>=1; i--) {
+        
+    }
+
+}

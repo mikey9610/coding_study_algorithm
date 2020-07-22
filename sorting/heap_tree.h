@@ -21,6 +21,7 @@ typedef struct _heap_tree {
 
 // internal
 void Heap_Tree_swap(Heap_Tree_Node* node1, Heap_Tree_Node* node2);
+
 void Heap_Tree_up_heap(Heap_Tree* heap, Heap_Tree_Node* node);
 void Heap_Tree_down_heap(Heap_Tree* heap, Heap_Tree_Node* node);
 

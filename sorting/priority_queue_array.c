@@ -28,9 +28,6 @@ int PQ_Array_is_empty(PQ_Array* pq) {
     return pq->index_ == 0;
 }
 
-int PQ_Array_get_size(PQ_Array* pq) {
-    return pq->index_;
-}
 void PQ_Array_push(PQ_Array* pq, int item) {
     // selection & insertion
     if(PQ_Array_is_full(pq))

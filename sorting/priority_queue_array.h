@@ -25,6 +25,4 @@ void PQ_Array_push(PQ_Array* pq, int item);
 int PQ_Array_pop(PQ_Array* pq);
 void PQ_Array_show(PQ_Array* pq);
 
-int PQ_Array_get_size(PQ_Array* pq);
-
 #endif
