@@ -1,4 +1,4 @@
-#include "priority_queue_linked_list.h"
+#include "priority_queue_list.h"
 
 PQ_List* PQ_List_new() {
     PQ_List* pq = (PQ_List*)malloc(sizeof(PQ_List));

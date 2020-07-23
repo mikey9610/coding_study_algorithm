@@ -1,5 +1,5 @@
-#ifndef PRIORITY_QUEUE_LINKED_LIST
-#define PRIORITY_QUEUE_LINKED_LIST
+#ifndef PRIORITY_QUEUE_LIST
+#define PRIORITY_QUEUE_LIST
 
 #include "../basic_tools.h"
 
