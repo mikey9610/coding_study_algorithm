@@ -1,5 +1,8 @@
 #include "timer.h"
 
+LARGE_INTEGER frequency;
+LARGE_INTEGER start_point;
+
 void measure_start() {
 	QueryPerformanceFrequency(&frequency);
 	QueryPerformanceCounter(&start_point);

@@ -1,9 +1,11 @@
 #ifndef SORT_TEST
 #define SORT_TEST
 
+#include <stdio.h>
+#include <time.h>
+
 #include "sort.h"
 #include "../timer/timer.h"
-#include "../basic_tools.h"
 
 #define PRE_ARRANGED		1
 #define NOT_ARRANGED		2
@@ -14,10 +16,14 @@
 #define DUPLICATE_NOT_ALLOWED	2	
 
 int select_continue();
-void initialize_list(int,int,int);
-int select_list_option();
-void test_show(int) ;
-void sort(int);
+
+int select_list_size();
+int select_list_arranged();
+int select_list_duplicate();
+
+int* initialize_list(int,int,int);
+int* copy_list(int*,int);
+
 void run();
 
 #endif

@@ -106,11 +106,7 @@ void qs_array_sort(int* list, int start, int end) {
 	
 	// non-duplicate ver
 	int index = qs_array_partition(list,start,end);
-	/*
-	for(int i=0;i<30;i++)
-		printf("%d ",list[i]);
-	printf("\n");
-	*/
+
 	qs_array_sort(list,start,index-1);
 	qs_array_sort(list,index+1,end);
 	
