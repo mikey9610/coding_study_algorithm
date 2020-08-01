@@ -1,34 +1,23 @@
-#include "dictionary.h"
-#include "../basic_tools.h"
+#include "binary_search_tree.h"
 
 int main() {
-	Dictionary dictionary;
+	Bst* tree = bst_create_tree();
 
-	d_setDictionary(&dictionary);
+	tree->insert(tree,1);
+	tree->insert(tree,5);
+	tree->insert(tree,7);
+	tree->insert(tree,11);
+	tree->insert(tree,95);
+	tree->insert(tree,0);
+	tree->insert(tree,4);
+	tree->insert(tree,33);
+	tree->insert(tree,22);
+	tree->insert(tree,80);
+	tree->insert(tree,66);
+	tree->insert(tree,56);
 
-	dictionary.insert(&dictionary,1);
-	dictionary.insert(&dictionary,5);
-	dictionary.insert(&dictionary,6);
-	dictionary.insert(&dictionary,8);
-	dictionary.insert(&dictionary,2);
-	dictionary.insert(&dictionary,4);
 
-	for(int i=0;i<dictionary.size_;i++)
-		printf(" %d",dictionary.array_[i]);
-	
-	dictionary.remove(&dictionary,5);
-	dictionary.remove(&dictionary,4);
-	dictionary.remove(&dictionary,3);
-	dictionary.remove(&dictionary,2);
-	printf("\n");
-
-	for(int i=0;i<dictionary.size_;i++)
-		printf(" %d",dictionary.array_[i]);
-
-	printf("\n");
-	printf(" %d\n",dictionary.find(&dictionary,1));
-	printf(" %d\n",dictionary.find(&dictionary,6));
-	printf(" %d\n",dictionary.find(&dictionary,10));
-
+	bst_test_show(tree);
+	getchar();
 	return 0;
 }
