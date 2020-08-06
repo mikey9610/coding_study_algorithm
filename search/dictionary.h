@@ -1,7 +1,8 @@
 #ifndef DICTIONARY
 #define DICTIONARY
 
-#include "../basic_tools.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 #define D_NO_SUCH_ITEM -1
 
