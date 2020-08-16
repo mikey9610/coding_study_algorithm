@@ -29,19 +29,17 @@ void HT_remove(HashTable* table, int key) {
 	// separate chaining
 	HT_BUCKET* pVisited = table->bucket_array_[index];
 	HT_BUCKET* pPrev = NULL;
-	printf("1");
+
 	while(pVisited!=NULL && pVisited->data_!=key) {
 		pPrev = pVisited;
 		pVisited = pVisited->link_;
 	}
-	printf("2");
 	if(pVisited == NULL)	return;	// no such item
-	printf("3");	
+	
 	if(pPrev == NULL)
 		table->bucket_array_[index] = pVisited->link_;
 	else
 		pPrev->link_ = pVisited->link_;
-	printf("4");	
 	free(pVisited);	
 
 	// open addressing
