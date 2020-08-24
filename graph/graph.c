@@ -13,6 +13,27 @@ Graph* g_newGraph() {
 // create new empty graph and return it
 
 
+GVertex* g_newVertex(const char* data) {
+	GVertex* vertex = (GVertex*)malloc(sizeof(GVertex));
+	vertex->data_ = data;
+	vertex->degree_ = 0;
+	vertex->edges_ = g_newEdgeNode(NULL);
+	vertex->label_ = L_FRESH;
+	return vertex;
+}
+// create new vertex and return it
+
+
+GEdge* g_newEdge(GVertex* vertex1, GVertex* vertex2) {
+	GEdge* edge = (GEdge*)malloc(sizeof(GEdge));
+	edge->vertices_[0] = vertex1;
+	edge->vertices_[1] = vertex2;
+	edge->label_ = L_FRESH;
+	return edge;
+}
+// create new edge whose vertices are vertex 1 & 2 and return it
+
+
 GVertex* g_insertVertex(Graph* graph, const char* data) {
 	GVertex* vertex = g_newVertex(data);
 	g_insertVertexNode(graph->vertices_,vertex);
@@ -96,13 +117,30 @@ GVertex* g_oppositeVertex(GEdge* edge, GVertex* vertex) {
 
 // INNER METHODS
 
-GEdge* g_newEdge(GVertex* vertex1, GVertex* vertex2) {
-	GEdge* edge = (GEdge*)malloc(sizeof(GEdge));
-	edge->vertices_[0] = vertex1;
-	edge->vertices_[1] = vertex2;
-	return edge;
+GVertexNode* g_newVertexNode(GVertex* vertex) {
+	GVertexNode* node = (GVertexNode*)malloc(sizeof(GVertexNode));
+	node->vertex_ = vertex;
+	node->next_ = NULL;
+	return node;
 }
-// create new edge whose vertices are vertex 1 & 2 and return it
+// create new vertex node and return it
+
+
+void g_insertVertexNode(GVertexNode* list, GVertex* vertex) {
+	while(list->next_ != NULL) list = list->next_;
+	list->next_ = g_newVertexNode(vertex);
+}
+// create new vertex node and insert it into back of the list
+
+
+void g_removeVertexNode(GVertexNode* list, GVertex* vertex) {
+	while(list->next_->vertex_ != vertex)	list = list->next_;	// not check validity
+	GVertexNode* node = list->next_;
+	list->next_ = list->next_->next_;
+	free(node);
+}
+// find vertex node which is supposed to be removed and remove it from the list
+// assume that there exists the vertex node inside the list
 
 
 GEdgeNode* g_newEdgeNode(GEdge* edge) {
@@ -131,42 +169,113 @@ void g_removeEdgeNode(GEdgeNode* list, GEdge* edge) {
 // assume that there exists the edge node inside the list
 
 
-GVertex* g_newVertex(const char* data) {
-	GVertex* vertex = (GVertex*)malloc(sizeof(GVertex));
-	vertex->data_ = data;
-	vertex->degree_ = 0;
-	vertex->edges_ = g_newEdgeNode(NULL);
-	return vertex;
+
+// GRAPH TRAVERSAL
+
+void g_initGraphLabel(Graph* graph) {
+	GVertexNode* vertex_list = graph->vertices_->next_;
+	while(vertex_list != NULL) {
+		vertex_list->vertex_->label_ = L_FRESH;
+		vertex_list = vertex_list->next_;
+	}
+	GEdgeNode* edge_list = graph->edges_->next_;
+	while(edge_list != NULL) {
+		edge_list->edge_->label_ = L_FRESH;
+		edge_list = edge_list->next_;
+	}
 }
-// create new vertex and return it
 
 
-GVertexNode* g_newVertexNode(GVertex* vertex) {
-	GVertexNode* node = (GVertexNode*)malloc(sizeof(GVertexNode));
-	node->vertex_ = vertex;
-	node->next_ = NULL;
-	return node;
+void g_rDFS(GVertex* vertex) {
+	GEdgeNode* edge_list = vertex->edges_->next_;	// 해당 정점의 간선리스트 참조
+	vertex->label_ = L_VISITED;	// 정점 방문 라벨
+
+	while(edge_list != NULL) {	// 순회할 간선 남음
+		if(edge_list->edge_->label_ == L_FRESH) {	// 간선 라벨 FRESH 경우
+			GVertex* opposite = g_oppositeVertex(edge_list->edge_,vertex);	// 해당 간선 반대편 정점 참조
+			printf("%s -> %s ",vertex->data_,opposite->data_);
+			if(opposite->label_ == L_FRESH) {	// 반대편 정점 라벨 FRESH 경우
+				// TREE
+				edge_list->edge_->label_ = L_TREE;
+				printf("(tree)\n");
+				g_rDFS(opposite);		// FRESH인 반대편 정점부터 DFS 재귀 호출
+			}
+			else {		// 반대편 정점 라벨 VISITED 경우
+				// BACK
+				edge_list->edge_->label_ = L_BACK;
+				printf("(back)\n");
+			}
+		}
+		edge_list = edge_list->next_;
+	}
 }
-// create new vertex node and return it
 
 
-void g_insertVertexNode(GVertexNode* list, GVertex* vertex) {
-	while(list->next_ != NULL) list = list->next_;
-	list->next_ = g_newVertexNode(vertex);
+void g_DFS(Graph* graph) {
+	printf("===================================\n");
+	printf("DFS\n");
+	g_initGraphLabel(graph);	// label initialize
+	GVertexNode* node = graph->vertices_->next_;
+	while(node != NULL && node->vertex_->label_ == L_FRESH)	// graph 내의 fresh인 정점에 대하여
+		g_rDFS(node->vertex_);	// 한 정점으로부터 dfs 수행
 }
-// create new vertex node and insert it into back of the list
 
 
-void g_removeVertexNode(GVertexNode* list, GVertex* vertex) {
-	while(list->next_->vertex_ != vertex)	list = list->next_;	// not check validity
-	GVertexNode* node = list->next_;
-	list->next_ = list->next_->next_;
-	free(node);
+void g_fBFS(Graph* graph, GVertex* start_vertex) {
+	GVertexNode* next_vertex_list = g_newVertexNode(NULL);
+	g_insertVertexNode(next_vertex_list,start_vertex);		// BFS start node
+	start_vertex->label_ = L_VISITED;
+	
+	while(next_vertex_list->next_ != NULL) {	// not any node left next level -> exit loop 
+		GVertexNode* vertex_list = next_vertex_list;	// next level -> current level
+		next_vertex_list = g_newVertexNode(NULL);		// reset next level
+		
+		while(vertex_list->next_ != NULL) {		// not any node left current level -> exit loop
+			GVertex* vertex = vertex_list->next_->vertex_;	// get vertex
+			g_removeVertexNode(vertex_list,vertex);			// remove vertex node
+
+			GEdgeNode* edge_list = vertex->edges_->next_;	// get edge list of current vertex
+			while(edge_list != NULL) {	
+				if(edge_list->edge_->label_ == L_FRESH) {	// fresh edge
+					GVertex* opposite = g_oppositeVertex(edge_list->edge_,vertex);	// get opposite vertex
+					printf("%s -> %s ",vertex->data_,opposite->data_);
+					if(opposite->label_ == L_FRESH) {	// opposite vertex fresh
+						// TREE
+						printf("(tree)\n");
+						edge_list->edge_->label_ = L_TREE;
+						opposite->label_ = L_VISITED;
+						g_insertVertexNode(next_vertex_list,opposite);	// add vertex into next level
+					}
+					else {	// opposite vertex visited
+						// CROSS	
+						printf("(cross)\n");
+						edge_list->edge_->label_ = L_CROSS;
+					}
+				}
+				edge_list = edge_list->next_;
+			}
+		}
+		free(vertex_list);	// free first node of current vertex list
+	}
 }
-// find vertex node which is supposed to be removed and remove it from the list
-// assume that there exists the vertex node inside the list
+
+
+void g_BFS(Graph* graph) {
+	printf("===================================\n");
+	printf("BFS\n");
+	g_initGraphLabel(graph);
+	GVertexNode* node = graph->vertices_->next_;
+	while(node != NULL && node->vertex_->label_ == L_FRESH)
+		g_fBFS(graph,node->vertex_);
+}
+
+
+
+// TEST
 
 void g_test_show(Graph* graph) {
+	printf("===================================\n");
+	printf("TEST SHOW\n");
 	GVertexNode* vertex_list = graph->vertices_->next_;
 	while(vertex_list != NULL) {
 		printf("vertex %s[%d] : ",vertex_list->vertex_->data_,vertex_list->vertex_->degree_);
@@ -180,5 +289,4 @@ void g_test_show(Graph* graph) {
 		printf("\n");
 		vertex_list = vertex_list->next_;
 	}
-	printf("===================================\n");
 }

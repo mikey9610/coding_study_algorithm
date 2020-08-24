@@ -4,8 +4,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define TRUE	1
-#define FALSE	0
+#define L_FRESH		0
+#define L_VISITED	1
+#define L_TREE		1
+#define L_BACK		2
+#define L_CROSS		2
 
 typedef struct _graph Graph;
 
@@ -24,6 +27,7 @@ struct _graph_vertex {
 	const char* data_;
 	int degree_;
 	GEdgeNode* edges_;
+	int label_;
 };
 
 struct _graph_edge_node {
@@ -33,6 +37,7 @@ struct _graph_edge_node {
 
 struct _graph_edge {
 	GVertex* vertices_[2];
+	int label_;
 };
 
 struct _graph {
@@ -41,10 +46,12 @@ struct _graph {
 
 	GVertexNode* vertices_;
 	GEdgeNode* edges_;
-};;
+};
 
 // USER INTERFACE
 Graph* g_newGraph();
+GVertex* g_newVertex(const char* data);
+GEdge* g_newEdge(GVertex* vertex1, GVertex* vertex2);
 
 GVertex* g_insertVertex(Graph* graph, const char* data);
 void g_removeVertex(Graph* graph, GVertex* vertex);
@@ -59,17 +66,28 @@ GEdge* g_getEdge(GEdgeNode* list, GVertex* vertex1, GVertex* vertex2);
 
 GVertex* g_oppositeVertex(GEdge* edge, GVertex* vertex);
 
-// INNER METHODS;
-GEdge* g_newEdge(GVertex* vertex1, GVertex* vertex2);
-GEdgeNode* g_newEdgeNode(GEdge* edge);
-void g_insertEdgeNode(GEdgeNode* list, GEdge* edge);
-void g_removeEdgeNode(GEdgeNode* list, GEdge* edge);
 
-GVertex* g_newVertex(const char* data);
+// INNER METHODS;
 GVertexNode* g_newVertexNode(GVertex* vertex);
 void g_insertVertexNode(GVertexNode* list, GVertex* vertex);
 void g_removeVertexNode(GVertexNode* list, GVertex* vertex);
 
+GEdgeNode* g_newEdgeNode(GEdge* edge);
+void g_insertEdgeNode(GEdgeNode* list, GEdge* edge);
+void g_removeEdgeNode(GEdgeNode* list, GEdge* edge);
+
+
+// GRAPH TRAVERSAL
+void g_initGraphLabel(Graph* graph);
+
+void g_rDFS(GVertex* vertex);
+void g_DFS(Graph* Graph);
+
+void g_fBFS(Graph* Graph, GVertex* vertex);
+void g_BFS(Graph* Graph);
+
+
+// TEST
 void g_test_show(Graph* graph);
 
 #endif
